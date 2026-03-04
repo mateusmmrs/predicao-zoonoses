@@ -1,0 +1,64 @@
+Rebuilding git history incrementally...
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: will change to "main" in Git 3.0. To configure the initial branch name
+hint: to use in all of your new repositories, which will suppress this warning,
+hint: call:
+hint:
+hint: 	git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint: 	git branch -m <name>
+hint:
+hint: Disable this message with "git config set advice.defaultBranchName false"
+Initialized empty Git repository in /home/mateus/.gemini/antigravity/scratch/predicao-zoonoses-brasil/.git/
+[master (root-commit) bc48dfa] chore: initial project setup and dependencies
+ 2 files changed, 62 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 requirements.txt
+[master b3d9b9d] feat(data): scripts for SINAN, INMET and IBGE extraction
+ 3 files changed, 86 insertions(+)
+ create mode 100644 src/data/extract_ibge.py
+ create mode 100644 src/data/extract_inmet.py
+ create mode 100644 src/data/extract_sinan.py
+[master 1c5d214] feat(notebooks): prototype SINAN data collection pipeline
+ 1 file changed, 60 insertions(+)
+ create mode 100644 notebooks/01_coleta_sinan.ipynb
+[master c22d025] feat(notebooks): explore climate and sanitation variables
+ 1 file changed, 119 insertions(+)
+ create mode 100644 notebooks/02_coleta_clima_saneamento.ipynb
+[master 3cedd20] feat(features): add core feature engineering logic
+ 1 file changed, 28 insertions(+)
+ create mode 100644 src/features/build_features.py
+[master f216572] feat(notebooks): temporal lags and spatial joins
+ 1 file changed, 57 insertions(+)
+ create mode 100644 notebooks/03_feature_engineering.ipynb
+[master 07454bf] docs: initial methodology and EDA placeholder
+ 2 files changed, 30 insertions(+)
+ create mode 100644 docs/metodologia.md
+ create mode 100644 notebooks/04_eda_zoonoses.ipynb
+[master a2f3806] feat(models): train and evaluate model scripts
+ 2 files changed, 25 insertions(+)
+ create mode 100644 src/models/evaluate.py
+ create mode 100644 src/models/train.py
+[master d3d4a38] feat(notebooks): model training and validation experiments
+ 1 file changed, 42 insertions(+)
+ create mode 100644 notebooks/05_modelagem.ipynb
+[master 0cb0808] feat(viz): geospatial risk mapping evaluation
+ 2 files changed, 26 insertions(+)
+ create mode 100644 notebooks/06_avaliacao_mapas.ipynb
+ create mode 100644 src/visualization/maps.py
+[master 8d90313] feat(app): add interactive Streamlit dashboard base
+ 1 file changed, 24 insertions(+)
+ create mode 100644 app/streamlit_app.py
+[master be5ed96] docs(viz): export feature importance chart for analysis
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 docs/images/feature_importance.png
+[master 848af42] docs(viz): export geospatial risk map and ROC analytics
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 docs/images/risk_map.png
+ create mode 100644 docs/images/roc_curve.png
+[master 16a5671] docs: write comprehensive portfolio README
+ 1 file changed, 113 insertions(+)
+ create mode 100644 README.md
