@@ -1,99 +1,97 @@
-# 🦠 Predição de Zoonoses no Brasil com Machine Learning
+<h1 align="center">
+  Predição de Zoonoses no Brasil
+</h1>
 
-> **Análise Preditiva e Mapeamento de Risco para Leptospirose e Leishmaniose**
+<p align="center">
+  <em>Modelo Preditivo para Surtos de Leptospirose e Leishmaniose com Machine Learning</em>
+</p>
 
-![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
-![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.3-orange.svg)
-![Pandas](https://img.shields.io/badge/pandas-2.0-150458.svg)
-![GeoPandas](https://img.shields.io/badge/GeoPandas-Spatial-green.svg)
-![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-red.svg)
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/Scikit--Learn-F7931E?logo=scikit-learn&logoColor=white" />
+  <img src="https://img.shields.io/badge/Pandas-150458?logo=pandas&logoColor=white" />
+  <img src="https://img.shields.io/badge/GeoPandas-4479A1?logo=data&logoColor=white" />
+  <img src="https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit&logoColor=white" />
+</p>
 
----
-
-## 📖 Visão Geral do Projeto
-
-Este projeto consiste em um sistema completo de inteligência de dados voltado para a saúde pública, capaz de prever surtos de zoonoses (Leptospirose, Leishmaniose) com **1 a 3 meses de antecedência**. 
-
-Através do cruzamento de dados epidemiológicos, anomalias climáticas e perfis de saneamento básico dos municípios, o modelo atua como um sistema de alerta precoce, auxiliando na alocação de recursos médicos e campanhas de prevenção.
-
-### 💡 A Hipótese Central
-**Surtos de zoonoses são o resultado rastreável de uma cadeia de eventos.**
-O modelo foi construído sob a premissa de que padrões climáticos extremos (chuvas intensas, secas severas) atuam como catalisadores em municípios com certas vulnerabilidades de infraestrutura (saneamento precário, alta densidade), criando um "delay" previsível até o início do surto epidêmico.
+Análise preditiva e epidemiológica cruzando dados de saúde pública, anomalias climáticas e perfil de saneamento dos municípios brasileiros.
 
 ---
 
-## 📊 Arquitetura de Dados e Pipeline
+## Contexto Epidemiológico
 
-O projeto consome exclusivamente dados públicos e abertos do Governo Federal, estruturados no seguinte pipeline:
+Surtos de zoonoses como Leptospirose e Leishmaniose afetam severamente as regiões mais vulneráveis do Brasil todos os anos. Os surtos seguem um padrão sazonal atrelado a chuvas intensas ou secas severas, somados a gargalos de infraestrutura (saneamento básico precário, lixo urbano).
 
-| Fonte de Dados | Propósito no Modelo | Variáveis Coletadas |
-|----------------|---------------------|---------------------|
-| **SINAN / DATASUS** | **Target (Alvo)** | Registros individuais confirmados de Leptospirose e Leishmaniose (2010 a 2023). Agregado mensalmente por município. |
-| **INMET** | **Sinais Ambientais** | Dados de centenas de estações meteorológicas (Temperatura, Precipitação e Umidade) com *Lags Temporais*. |
-| **IBGE (PNSB / Censo)** | **Risco Estrutural** | Índices de esgotamento sanitário, acesso a água tratada e coleta de lixo. |
-| **Geociências (IBGE)**| **Inteligência Espacial** | Malha municipal para match geográfico (via KDTree) e visualização de mapas. |
+O objetivo deste projeto foi entender: é possível prever um surto epidêmico antes que ele sature o sistema de saúde? Como os dados climáticos do mês passado sinalizam o risco de contágio no próximo trimestre?
 
-### Processamento de Features (Feature Engineering)
-A inteligência do modelo reside nas variáveis defasadas (lags):
-- **Lags Climáticos (1, 2, 3 meses):** O volume de chuvas de hoje impacta os casos de leptospirose daqui a 60 dias.
-- **Sazonalidade Cíclica:** Transformações Trigonométricas (Seno/Cosseno) dos meses do ano.
-- **Auto-regressividade:** Casos registrados no mês anterior como preditor forte de tendência.
-- **Incidência Normalizada:** Conversão de valores absolutos para taxa por 100k habitantes.
+## A Hipótese e o Modelo
 
----
+O projeto modelou o risco de surto (casos mensais acima do percentil 90 histórico do município) como um problema complexo de **Classificação Binária em Séries Temporais**.
 
-## 🤖 Modelagem Preditiva e Resultados
+Surtos de zoonoses são o resultado rastreável de uma cadeia de eventos. Através da aplicação de múltiplos lags temporais (defasagens de 1 a 3 meses) nas variáveis meteorológicas e auto-regressividade na série de contágio, o modelo atua como um sistema de alerta precoce. Validamos a abordagem com `Random Forest` e `HistGradientBoosting`, mantendo um rígido controle no split temporal para evitar data leakage.
 
-O problema foi modelado como uma tarefa de **Classificação Binária** para detecção de anomalias temporais (Surtos), onde a classe "1" representa casos acima do percentil 90 histórico do município.
+O modelo final atingiu ROC-AUC de 0.87 no set de teste isolado (2022-2023).
 
-Devido à natureza temporal, utilizamos validação cruzada **TimeSeriesSplit** e evitamos categoricamente splits aleatórios (data leakage). Avaliamos múltiplos algoritmos: `Logistic Regression`, `Random Forest`, `Gradient Boosting` e `HistGradientBoosting`.
+## Dados
 
-### 🎯 Feature Importance (Influência das Variáveis)
-Abaixo, a visualização dos fatores que mais determinam a chance de um surto ocorrer, extraídos do melhor modelo (Ensemble Baseado em Árvores):
+Todas as fontes são públicas, permitindo reprodutibilidade do estudo.
 
-![Feature Importance](docs/images/feature_importance.png)
-*(Os lags climáticos e o histórico recente da doença dominam a importância preditiva).*
+| Fonte | Dataset | Acesso |
+|-------|---------|--------|
+| SINAN/DATASUS | Casos confirmados de zoonoses (2010 a 2023) | PySUS (API pública) |
+| INMET (BDMEP) | Temperatura horária, precipitação, umidade | Portal de Dados Históricos |
+| IBGE/SIDRA | Municípios por tipo de esgotamento e população | API pública |
+| IBGE | Malha municipal | geobr (Python) |
 
-### 📈 Desempenho do Modelo (ROC e Precision-Recall)
-O modelo atinge excelentes taxas de recall na identificação precoce do risco, otimizando o trade-off entre falsos positivos e a identificação de áreas necessitadas.
+## Gráficos e Visualizações Analíticas
 
+### Feature Importance do Modelo
+![Importância Variáveis](docs/images/feature_importance.png)
+
+### Regiões de Risco Extremo no Brasil
+![Mapa de Risco](docs/images/risk_map.png)
+
+### Avaliação (Curva ROC vs Falsos Positivos)
 ![Curva ROC](docs/images/roc_curve.png)
-> **Métricas (Test Set - 2022/2023):**
-> - **AUC-ROC:** 0.87
-> - **Average Precision (PR-AUC):** 0.74
 
 ---
 
-## 🗺️ Mapa de Risco Preditivo (Output)
+## Stack Tecnológica
 
-O produto final do modelo é um **Mapa de Calor de Risco Preditivo**. Através de visualizações geoespaciais e da aplicação web interativa em Streamlit, gestores de saúde visualizam a probabilidade de surtos para o próximo trimestre.
-
-![Mapa de Risco Brasil](docs/images/risk_map.png)
+| Tecnologia | Aplicação |
+|-----------|-----------|
+| Python | Linguagem principal |
+| Scikit-learn | Treinamento de modelos ML e processamento |
+| Pandas / GeoPandas | Engenharia de dados temporais e geolocalização |
+| Jupyter | Exploração, EDA e documentação iterativa |
+| Streamlit | Disponibilização do dashboard interativo de mapas |
 
 ---
 
-## 💻 Reproduzindo o Projeto
+## Como rodar
 
-A codebase está estruturada em formato modular.
-
-### Pré-requisitos
 ```bash
 git clone https://github.com/mateusmmrs/predicao-zoonoses.git
 cd predicao-zoonoses
 pip install -r requirements.txt
+
+# Ordem de execução de coletas e features
+jupyter notebook notebooks/01_coleta_sinan.ipynb
+jupyter notebook notebooks/02_coleta_clima_saneamento.ipynb
+jupyter notebook notebooks/03_feature_engineering.ipynb
+
+# Modelagem de Machine Learning
+jupyter notebook notebooks/05_modelagem.ipynb
 ```
 
-### Ordem de Execução
-Para reproduzir a pesquisa e o modelo, execute os Notebooks sequencialmente:
+Nota: a etapa de feature engineering roda um cruzamento geométrico (via KDTree) em milhares de malhas do IBGE contra as estações do INMET e pode levar algum tempo localmente.
 
-1. **`01_coleta_sinan.ipynb`**: Consome a API do PySUS para o DATASUS.
-2. **`02_coleta_clima_saneamento.ipynb`**: Raspagem via requests do INMET e via SIDRA do IBGE.
-3. **`03_feature_engineering.ipynb`**: Construção da grande matriz de variáveis defasadas.
-4. **`04_eda_zoonoses.ipynb`**: Análise Exploratória e estatística espacial.
-5. **`05_modelagem.ipynb`**: Treinamento, validação temporal cruzada e deploy do artefato `.pkl`.
-6. **`06_avaliacao_mapas.ipynb`**: Geração geoespacial.
-7. **`app/streamlit_app.py`**: *(Opcional)* Rode com `streamlit run app/streamlit_app.py` para abrir o dashboard final.
+## Limitações
+
+- Diagnóstico subnotificado no SINAN em regiões remotas do interior.
+- As estações do INMET não cobrem 100% das áreas rurais (assumimos como proxy a estação mais próxima via distância euclidiana).
+- Saneamento básico tratado como dado macro (por município), suprimindo nuances entre bairros.
 
 ---
 
-> Desenvolvido por Mateus — Portfólio de Ciência de Dados
+**Mateus Martins** · Cientista de Dados · Inteligência Epidemiológica
